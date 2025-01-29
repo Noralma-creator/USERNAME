@@ -1,0 +1,131 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOpFCl45+jrBvtbBEA5SOX3",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Noralma-creator/USERNAME/blob/master/knights\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from logic import *\n",
+        "\n",
+        "AKnight = Symbol(\"A is a Knight\")\n",
+        "AKnave = Symbol(\"A is a Knave\")\n",
+        "\n",
+        "BKnight = Symbol(\"B is a Knight\")\n",
+        "BKnave = Symbol(\"B is a Knave\")\n",
+        "\n",
+        "CKnight = Symbol(\"C is a Knight\")\n",
+        "CKnave = Symbol(\"C is a Knave\")\n",
+        "\n",
+        "# Puzzle 0\n",
+        "# A says \"I am both a knight and a knave.\"\n",
+        "knowledge0 = And(\n",
+        "    Or(AKnight, AKnave),\n",
+        "    Not(And(AKnight, AKnave)),\n",
+        "    Implication(AKnight, And(AKnight, AKnave)),\n",
+        "    Implication(AKnave, Not(And(AKnight, AKnave)))\n",
+        ")\n",
+        "\n",
+        "# Puzzle 1\n",
+        "# A says \"We are both knaves.\"\n",
+        "# B says nothing.\n",
+        "knowledge1 = And(\n",
+        "    Or(AKnight, AKnave),\n",
+        "    Or(BKnight, BKnave),\n",
+        "    Implication(AKnight, Not(And(AKnave, BKnave))),\n",
+        "    Implication(AKnave, Not(And(AKnave, BKnave)))  # Corregida la lógica aquí\n",
+        ")\n",
+        "\n",
+        "# Puzzle 2\n",
+        "# A says \"We are the same kind.\"\n",
+        "# B says \"We are of different kinds.\"\n",
+        "knowledge2 = And(\n",
+        "    Or(AKnight, AKnave),\n",
+        "    Or(BKnight, BKnave),\n",
+        "    Implication(AKnight, Biconditional(AKnight, BKnight)),  # Usar Biconditional en lugar de Equiv\n",
+        "    Implication(AKnave, Not(Biconditional(AKnight, BKnight)))\n",
+        ")\n",
+        "\n",
+        "# Puzzle 3\n",
+        "# A dice \"Soy un caballero\" o \"Soy un canalla\", pero no se sabe cuál.\n",
+        "# B dice \"A dijo 'Soy un canalla'.\"\n",
+        "# B también dice \"C es un canalla.\"\n",
+        "# C dice \"A es un caballero.\"\n",
+        "knowledge3 = And(\n",
+        "    Or(AKnight, AKnave),\n",
+        "    Or(BKnight, BKnave),\n",
+        "    Or(CKnight, CKnave),\n",
+        "    Implication(BKnight, Not(Biconditional(AKnight, AKnave))),\n",
+        "    Implication(BKnight, CKnave),\n",
+        "    Implication(CKnight, AKnight)\n",
+        ")\n",
+        "\n",
+        "def main():\n",
+        "    symbols = [AKnight, AKnave, BKnight, BKnave, CKnight, CKnave]\n",
+        "    puzzles = [\n",
+        "        (\"Puzzle 0\", knowledge0),\n",
+        "        (\"Puzzle 1\", knowledge1),\n",
+        "        (\"Puzzle 2\", knowledge2),\n",
+        "        (\"Puzzle 3\", knowledge3)\n",
+        "    ]\n",
+        "\n",
+        "    for puzzle, knowledge in puzzles:\n",
+        "        print(puzzle)\n",
+        "        if len(knowledge.conjuncts) == 0:\n",
+        "            print(\"    Not yet implemented.\")\n",
+        "        else:\n",
+        "            for symbol in symbols:\n",
+        "                if model_check(knowledge, symbol):\n",
+        "                    print(f\"    {symbol}\")\n",
+        "\n",
+        "if __name__ == \"__main__\":\n",
+        "    main()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "PAzU8O_ogD6f",
+        "outputId": "7a67228d-dc8a-471e-f223-929a2af50546"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Puzzle 0\n",
+            "    A is a Knave\n",
+            "Puzzle 1\n",
+            "Puzzle 2\n",
+            "    B is a Knight\n",
+            "Puzzle 3\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
