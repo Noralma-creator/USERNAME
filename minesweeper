@@ -1,0 +1,208 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMq4YSfEn4lhjzdenrnzSne",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Noralma-creator/USERNAME/blob/master/minesweeper\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from logic import *\n",
+        "\n",
+        "AKnight = Symbol(\"A is a Knight\")\n",
+        "AKnave = Symbol(\"A is a Knave\")\n",
+        "\n",
+        "BKnight = Symbol(\"B is a Knight\")\n",
+        "BKnave = Symbol(\"B is a Knave\")\n",
+        "\n",
+        "CKnight = Symbol(\"C is a Knight\")\n",
+        "CKnave = Symbol(\"C is a Knave\")\n",
+        "\n",
+        "# Puzzle 0\n",
+        "# A says \"I am both a knight and a knave.\"\n",
+        "knowledge0 = And(\n",
+        "    Or(AKnight, AKnave),\n",
+        "    Not(And(AKnight, AKnave)),\n",
+        "    Implication(AKnight, And(AKnight, AKnave)),\n",
+        "    Implication(AKnave, Not(And(AKnight, AKnave)))\n",
+        ")\n",
+        "\n",
+        "# Puzzle 1\n",
+        "# A says \"We are both knaves.\"\n",
+        "# B says nothing.\n",
+        "knowledge1 = And(\n",
+        "    Or(AKnight, AKnave),\n",
+        "    Or(BKnight, BKnave),\n",
+        "    Implication(AKnight, Not(And(AKnave, BKnave))),\n",
+        "    Implication(AKnave, Not(And(AKnave, BKnave)))  # Corregida la lógica aquí\n",
+        ")\n",
+        "\n",
+        "# Puzzle 2\n",
+        "# A says \"We are the same kind.\"\n",
+        "# B says \"We are of different kinds.\"\n",
+        "knowledge2 = And(\n",
+        "    Or(AKnight, AKnave),\n",
+        "    Or(BKnight, BKnave),\n",
+        "    Implication(AKnight, Biconditional(AKnight, BKnight)),  # Usar Biconditional en lugar de Equiv\n",
+        "    Implication(AKnave, Not(Biconditional(AKnight, BKnight)))\n",
+        ")\n",
+        "\n",
+        "# Puzzle 3\n",
+        "# A dice \"Soy un caballero\" o \"Soy un canalla\", pero no se sabe cuál.\n",
+        "# B dice \"A dijo 'Soy un canalla'.\"\n",
+        "# B también dice \"C es un canalla.\"\n",
+        "# C dice \"A es un caballero.\"\n",
+        "knowledge3 = And(\n",
+        "    Or(AKnight, AKnave),\n",
+        "    Or(BKnight, BKnave),\n",
+        "    Or(CKnight, CKnave),\n",
+        "    Implication(BKnight, Not(Biconditional(AKnight, AKnave))),\n",
+        "    Implication(BKnight, CKnave),\n",
+        "    Implication(CKnight, AKnight)\n",
+        ")\n",
+        "\n",
+        "def main():\n",
+        "    symbols = [AKnight, AKnave, BKnight, BKnave, CKnight, CKnave]\n",
+        "    puzzles = [\n",
+        "        (\"Puzzle 0\", knowledge0),\n",
+        "        (\"Puzzle 1\", knowledge1),\n",
+        "        (\"Puzzle 2\", knowledge2),\n",
+        "        (\"Puzzle 3\", knowledge3)\n",
+        "    ]\n",
+        "\n",
+        "    for puzzle, knowledge in puzzles:\n",
+        "        print(puzzle)\n",
+        "        if len(knowledge.conjuncts) == 0:\n",
+        "            print(\"    Not yet implemented.\")\n",
+        "        else:\n",
+        "            for symbol in symbols:\n",
+        "                if model_check(knowledge, symbol):\n",
+        "                    print(f\"    {symbol}\")\n",
+        "\n",
+        "if __name__ == \"__main__\":\n",
+        "    main()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "PAzU8O_ogD6f",
+        "outputId": "7a67228d-dc8a-471e-f223-929a2af50546"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Puzzle 0\n",
+            "    A is a Knave\n",
+            "Puzzle 1\n",
+            "Puzzle 2\n",
+            "    B is a Knight\n",
+            "Puzzle 3\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip3 install --upgrade submit50"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xLHhiY5h9J3C",
+        "outputId": "03732efd-c3cf-4328-82d1-1fea5ee04672"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting submit50\n",
+            "  Downloading submit50-3.2.0-py3-none-any.whl.metadata (709 bytes)\n",
+            "Collecting lib50<4,>=3 (from submit50)\n",
+            "  Downloading lib50-3.0.12-py3-none-any.whl.metadata (964 bytes)\n",
+            "Requirement already satisfied: packaging in /usr/local/lib/python3.11/dist-packages (from submit50) (24.2)\n",
+            "Requirement already satisfied: pytz in /usr/local/lib/python3.11/dist-packages (from submit50) (2024.2)\n",
+            "Requirement already satisfied: requests>=2.19 in /usr/local/lib/python3.11/dist-packages (from submit50) (2.32.3)\n",
+            "Requirement already satisfied: setuptools in /usr/local/lib/python3.11/dist-packages (from submit50) (75.1.0)\n",
+            "Requirement already satisfied: termcolor>=1.1 in /usr/local/lib/python3.11/dist-packages (from submit50) (2.5.0)\n",
+            "\u001b[33mWARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ProtocolError('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))': /simple/attrs/\u001b[0m\u001b[33m\n",
+            "\u001b[0mCollecting attrs<21,>=18.1 (from lib50<4,>=3->submit50)\n",
+            "  Downloading attrs-20.3.0-py2.py3-none-any.whl.metadata (10 kB)\n",
+            "Requirement already satisfied: pexpect<5,>=4.6 in /usr/local/lib/python3.11/dist-packages (from lib50<4,>=3->submit50) (4.9.0)\n",
+            "Requirement already satisfied: pyyaml<7 in /usr/local/lib/python3.11/dist-packages (from lib50<4,>=3->submit50) (6.0.2)\n",
+            "Collecting termcolor>=1.1 (from submit50)\n",
+            "  Downloading termcolor-1.1.0.tar.gz (3.9 kB)\n",
+            "  Preparing metadata (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "Collecting jellyfish<1,>=0.7 (from lib50<4,>=3->submit50)\n",
+            "  Downloading jellyfish-0.11.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.5 kB)\n",
+            "Requirement already satisfied: cryptography>=2.7 in /usr/local/lib/python3.11/dist-packages (from lib50<4,>=3->submit50) (43.0.3)\n",
+            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.11/dist-packages (from requests>=2.19->submit50) (3.4.1)\n",
+            "Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.11/dist-packages (from requests>=2.19->submit50) (3.10)\n",
+            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.11/dist-packages (from requests>=2.19->submit50) (2.3.0)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.11/dist-packages (from requests>=2.19->submit50) (2024.12.14)\n",
+            "Requirement already satisfied: cffi>=1.12 in /usr/local/lib/python3.11/dist-packages (from cryptography>=2.7->lib50<4,>=3->submit50) (1.17.1)\n",
+            "Requirement already satisfied: ptyprocess>=0.5 in /usr/local/lib/python3.11/dist-packages (from pexpect<5,>=4.6->lib50<4,>=3->submit50) (0.7.0)\n",
+            "Requirement already satisfied: pycparser in /usr/local/lib/python3.11/dist-packages (from cffi>=1.12->cryptography>=2.7->lib50<4,>=3->submit50) (2.22)\n",
+            "Downloading submit50-3.2.0-py3-none-any.whl (19 kB)\n",
+            "Downloading lib50-3.0.12-py3-none-any.whl (39 kB)\n",
+            "Downloading attrs-20.3.0-py2.py3-none-any.whl (49 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m49.3/49.3 kB\u001b[0m \u001b[31m2.7 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading jellyfish-0.11.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.2 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m1.2/1.2 MB\u001b[0m \u001b[31m19.1 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hBuilding wheels for collected packages: termcolor\n",
+            "  Building wheel for termcolor (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for termcolor: filename=termcolor-1.1.0-py3-none-any.whl size=4832 sha256=24f2cdd0a2c4170287348ef8fd6fddc90a208a2e8dd929ba6cfa2d788b080b9d\n",
+            "  Stored in directory: /root/.cache/pip/wheels/9f/ca/d7/8f2399d70f5d641d4fef951a78d6aa4ab64cc582e1c4dec9a3\n",
+            "Successfully built termcolor\n",
+            "Installing collected packages: termcolor, jellyfish, attrs, lib50, submit50\n",
+            "  Attempting uninstall: termcolor\n",
+            "    Found existing installation: termcolor 2.5.0\n",
+            "    Uninstalling termcolor-2.5.0:\n",
+            "      Successfully uninstalled termcolor-2.5.0\n",
+            "  Attempting uninstall: jellyfish\n",
+            "    Found existing installation: jellyfish 1.1.0\n",
+            "    Uninstalling jellyfish-1.1.0:\n",
+            "      Successfully uninstalled jellyfish-1.1.0\n",
+            "  Attempting uninstall: attrs\n",
+            "    Found existing installation: attrs 24.3.0\n",
+            "    Uninstalling attrs-24.3.0:\n",
+            "      Successfully uninstalled attrs-24.3.0\n",
+            "\u001b[31mERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n",
+            "jsonschema 4.23.0 requires attrs>=22.2.0, but you have attrs 20.3.0 which is incompatible.\n",
+            "referencing 0.36.1 requires attrs>=22.2.0, but you have attrs 20.3.0 which is incompatible.\u001b[0m\u001b[31m\n",
+            "\u001b[0mSuccessfully installed attrs-20.3.0 jellyfish-0.11.2 lib50-3.0.12 submit50-3.2.0 termcolor-1.1.0\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
